@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C Programming Q&A BY NASTEKGAZ FOCUSED FOR PU STUDENTS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            light: '#3B82F6',
+                            DEFAULT: '#2563EB',
+                            dark: '#1D4ED8',
+                        },
+                        secondary: {
+                            light: '#10B981',
+                            DEFAULT: '#059669',
+                            dark: '#047857',
+                        },
+                        dark: {
+                            DEFAULT: '#1F2937',
+                            light: '#374151',
+                        },
+                        light: {
+                            DEFAULT: '#F9FAFB',
+                            dark: '#F3F4F6',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['Fira Code', 'monospace'],
+                    },
+                    animation: {
+                        'glow': 'glow 2s ease-in-out infinite alternate',
+                    },
+                    keyframes: {
+                        glow: {
+                            'from': { 'text-shadow': '0 0 5px rgba(59, 130, 246, 0.5)' },
+                            'to': { 'text-shadow': '0 0 15px rgba(59, 130, 246, 0.8)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .nav-link {
+            position: relative;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -2px;
+            left: 0;
+            background-color: #3B82F6;
+            transition: width 0.3s ease;
+        }
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        .logo:hover {
+            animation: glow 1.5s ease-in-out infinite alternate;
+        }
+        pre {
+            position: relative;
+        }
+        .copy-btn {
+            position: absolute;
+            right: 0.5rem;
+            top: 0.5rem;
+            background-color: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: #E2E8F0;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        pre:hover .copy-btn {
+            opacity: 1;
+        }
+        .copy-btn:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        .question-card {
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .question-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .back-to-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .back-to-top.visible {
+            opacity: 1;
+        }
+        .dark-mode-toggle {
+            transition: all 0.3s;
+        }
+    </style>
+</head>
+<body class="font-sans bg-light-light text-dark dark:bg-dark dark:text-light-light min-h-screen transition-colors duration-300">
+    <!-- Navigation -->
+    <nav class="bg-white dark:bg-dark shadow-md sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-4">
+                <a href="#" class="text-2xl font-bold logo text-primary-dark dark:text-primary-light">NASTEKCNOTES</a>
+                <div class="hidden md:flex space-x-6">
+                    <a href="#theory" class="nav-link text-gray-700 dark:text-gray-300 hover:text-primary-dark dark:hover:text-primary-light">Theory</a>
+                    <a href="#programs" class="nav-link text-gray-700 dark:text-gray-300 hover:text-primary-dark dark:hover:text-primary-light">Programs</a>
+                    <a href="#features" class="nav-link text-gray-700 dark:text-gray-300 hover:text-primary-dark dark:hover:text-primary-light">Features</a>
+                </div>
+            </div>
+            <div class="flex items-center space-x-4">
+                <button id="darkModeToggle" class="dark-mode-toggle p-2 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path id="sunIcon" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" />
+                        <path id="moonIcon" class="hidden" d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
+                    </svg>
+                </button>
+                <button id="mobileMenuBtn" class="md:hidden p-2 rounded-lg bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <!-- Mobile menu -->
+        <div id="mobileMenu" class="hidden md:hidden bg-white dark:bg-dark-light px-4 py-2">
+            <a href="#theory" class="block py-2 text-gray-700 dark:text-gray-300 hover:text-primary-dark dark:hover:text-primary-light">Theory Questions</a>
+            <a href="#programs" class="block py-2 text-gray-700 dark:text-gray-300 hover:text-primary-dark dark:hover:text-primary-light">Programming Questions</a>
+            <a href="#features" class="block py-2 text-gray-700 dark:text-gray-300 hover:text-primary-dark dark:hover:text-primary-light">Features</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="bg-gradient-to-r from-primary-light to-secondary-light text-white py-16">
+        <div class="container mx-auto px-4 text-center">
+            <h1 class="text-4xl md:text-5xl font-bold mb-4">C Programming Theory & Programs BY NASTEK_GAZ</h1>
+            <p class="text-xl md:text-2xl mb-8">Master C programming with comprehensive notes, examples, and practice problems</p>
+            <div class="flex flex-wrap justify-center gap-4">
+                <a href="#theory" class="bg-white text-primary-dark px-6 py-3 rounded-lg font-medium hover:bg-gray-100 transition duration-300 shadow-lg">Explore Theory</a>
+                <a href="#programs" class="bg-transparent border-2 border-white px-6 py-3 rounded-lg font-medium hover:bg-white hover:text-primary-dark transition duration-300">View Programs</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-12">
+        <!-- Features Section -->
+        <section id="features" class="mb-16">
+            <h2 class="text-3xl font-bold text-center mb-12 text-dark dark:text-light">Why Choose NASTEKCNOTES?</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-white dark:bg-dark-light p-6 rounded-xl shadow-md hover:shadow-lg transition duration-300">
+                    <div class="text-primary-dark dark:text-primary-light mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2 text-dark dark:text-light">Comprehensive Coverage</h3>
+                    <p class="text-gray-600 dark:text-gray-300">All essential C programming concepts from basics to advanced topics with detailed explanations.</p>
+                </div>
+                <div class="bg-white dark:bg-dark-light p-6 rounded-xl shadow-md hover:shadow-lg transition duration-300">
+                    <div class="text-primary-dark dark:text-primary-light mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2 text-dark dark:text-light">Practical Examples</h3>
+                    <p class="text-gray-600 dark:text-gray-300">Hands-on code examples for each concept with copy-paste functionality for easy implementation.</p>
+                </div>
+                <div class="bg-white dark:bg-dark-light p-6 rounded-xl shadow-md hover:shadow-lg transition duration-300">
+                    <div class="text-primary-dark dark:text-primary-light mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2 text-dark dark:text-light">Exam Focused</h3>
+                    <p class="text-gray-600 dark:text-gray-300">Curated content highlighting frequently asked questions and important programming problems.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Theory Questions -->
+        <section id="theory" class="mb-16">
+            <div class="flex items-center justify-between mb-8">
+                <h2 class="text-3xl font-bold text-dark dark:text-light border-b-4 border-primary-dark dark:border-primary-light pb-2">Theory Questions</h2>
+                <div class="relative">
+                    <input type="text" id="theorySearch" placeholder="Search theory questions..." class="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-dark-light focus:outline-none focus:ring-2 focus:ring-primary-light">
+                    <button class="absolute right-3 top-2 text-gray-400">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 gap-6">
+                <!-- Question 1 -->
+                <div class="question-card bg-white dark:bg-dark-light rounded-xl shadow-md overflow-hidden">
+                    <div class="p-6">
+                        <div class="flex justify-between items-start">
+                            <h3 class="text-xl font-semibold text-dark dark:text-light mb-4">1. Key Features of C and Basic Program Structure</h3>
+                            <span class="bg-primary-light text-white text-xs px-2 py-1 rounded-full">Repeated 2 times</span>
+                        </div>
+                        <div class="space-y-4 text-gray-700 dark:text-gray-300">
+                            <div>
+                                <p class="font-medium text-dark dark:text-light">Key Features:</p>
+                                <ul class="list-disc pl-6 space-y-1">
+                                    <li><strong>Efficiency</strong>: Low-level memory access for fast execution.</li>
+                                    <li><strong>Portability</strong>: Runs on various platforms with minimal changes.</li>
+                                    <li><strong>Flexibility</strong>: Supports both high-level and low-level programming.</li>
+                                    <li><strong>Rich Libraries</strong>: Extensive built-in functions for I/O, strings, etc.</li>
+                                    <li><strong>Structured Programming</strong>: Modular design via functions.</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <p class="font-medium text-dark dark:text-light">Basic Structure:</p>
+                                <ul class="list-disc pl-6 space-y-1">
+                                    <li>Preprocessor directives</li>
+                                    <li>Global declarations</li>
+                                    <li>Main function</li>
+                                    <li>User-defined functions</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <p class="font-medium text-dark dark:text-light">Example:</p>
+                                <div class="relative">
+                                    <pre class="bg-gray-800 text-gray-200 p-4 rounded-lg overflow-x-auto font-mono text-sm"><code>#include &lt;stdio.h&gt;
+int globalVar = 10; // Global variable
+
+int main() {
+    printf("Hello, World!\n");
+    display();
+    return 0;
+}
+
+void display() {
+    printf("User-defined function.\n");
+}</code></pre>
+                                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Question 2 -->
+                <div class="question-card bg-white dark:bg-dark-light rounded-xl shadow-md overflow-hidden">
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold text-dark dark:text-light mb-4">2. Comments in C: Single-line vs Block Comments</h3>
+                        <div class="space-y-4 text-gray-700 dark:text-gray-300">
+                            <div>
+                                <p class="font-medium text-dark dark:text-light">Single Line Comment:</p>
+                                <p>Uses <code class="bg-gray-200 dark:bg-gray-700 px-1 py-0.5 rounded">//</code>, comments out one line.</p>
+                            </div>
+                            <div>
+                                <p class="font-medium text-dark dark:text-light">Block Comment:</p>
+                                <p>Uses <code class="bg-gray-200 dark:bg-gray-700 px-1 py-0.5 rounded">/* */</code>, spans multiple lines.</p>
+                            </div>
+                            <div>
+                                <p class="font-medium text-dark dark:text-light">Importance:</p>
+                                <p>Enhances readability, documents code, aids debugging, and supports collaboration.</p>
+                            </div>
+                            <div>
+                                <p class="font-medium text-dark dark:text-light">Example:</p>
+                                <div class="relative">
+                                    <pre class="bg-gray-800 text-gray-200 p-4 rounded-lg overflow-x-auto font-mono text-sm"><code>#include &lt;stdio.h&gt;
+int main() {
+    // This is a single line comment
+    printf("Hello!\n");
+    
+    /* This is a block comment
+       that spans multiple lines */
+    return 0;
+}</code></pre>
+                                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- More questions would follow the same pattern -->
+                <!-- For brevity, I've included just 2 questions here -->
+            </div>
+        </section>
+
+        <!-- Programming Questions -->
+        <section id="programs" class="mb-16">
+            <div class="flex items-center justify-between mb-8">
+                <h2 class="text-3xl font-bold text-dark dark:text-light border-b-4 border-primary-dark dark:border-primary-light pb-2">Programming Questions</h2>
+                <div class="relative">
+                    <input type="text" id="programSearch" placeholder="Search programs..." class="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-dark-light focus:outline-none focus:ring-2 focus:ring-primary-light">
+                    <button class="absolute right-3 top-2 text-gray-400">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 gap-6">
+                <!-- Program 1 -->
+                <div class="question-card bg-white dark:bg-dark-light rounded-xl shadow-md overflow-hidden">
+                    <div class="p-6">
+                        <div class="flex justify-between items-start">
+                            <h3 class="text-xl font-semibold text-dark dark:text-light mb-4">1. Prime Numbers Between 1 to 50</h3>
+                            <span class="bg-primary-light text-white text-xs px-2 py-1 rounded-full">Repeated 3 times</span>
+                        </div>
+                        <div class="space-y-4 text-gray-700 dark:text-gray-300">
+                            <p>Write a program to calculate and display all prime numbers between 1 and 50.</p>
+                            <div class="relative">
+                                <pre class="bg-gray-800 text-gray-200 p-4 rounded-lg overflow-x-auto font-mono text-sm"><code>#include &lt;stdio.h&gt;
+
+// Function to check if a number is prime
+int isPrime(int n) {
+    if (n <= 1) return 0;
+    for (int i = 2; i * i <= n; i++) {
+        if (n % i == 0) return 0;
+    }
+    return 1;
+}
+
+int main() {
+    printf("Prime numbers from 1 to 50:\n");
+    for (int i = 1; i <= 50; i++) {
+        if (isPrime(i)) {
+            printf("%d ", i);
+        }
+    }
+    printf("\n");
+    return 0;
+}</code></pre>
+                                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                            </div>
+                            <div class="bg-blue-50 dark:bg-blue-900/30 p-4 rounded-lg">
+                                <p class="font-medium text-blue-800 dark:text-blue-200">Output:</p>
+                                <pre class="font-mono text-sm mt-1">Prime numbers from 1 to 50:
+2 3 5 7 11 13 17 19 23 29 31 37 41 43 47</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Program 2 -->
+                <div class="question-card bg-white dark:bg-dark-light rounded-xl shadow-md overflow-hidden">
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold text-dark dark:text-light mb-4">2. Star Pattern</h3>
+                        <div class="space-y-4 text-gray-700 dark:text-gray-300">
+                            <p>Write a program to display the following pattern:</p>
+                            <pre class="bg-gray-200 dark:bg-gray-700 p-4 rounded-lg overflow-x-auto font-mono text-sm">*
+**
+***
+****
+*****</pre>
+                            <div class="relative">
+                                <pre class="bg-gray-800 text-gray-200 p-4 rounded-lg overflow-x-auto font-mono text-sm"><code>#include &lt;stdio.h&gt;
+
+int main() {
+    // Outer loop for rows
+    for (int i = 1; i <= 5; i++) {
+        // Inner loop for columns
+        for (int j = 1; j <= i; j++) {
+            printf("*");
+        }
+        printf("\n");
+    }
+    return 0;
+}</code></pre>
+                                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- More programs would follow the same pattern -->
+                <!-- For brevity, I've included just 2 programs here -->
+            </div>
+        </section>
+
+        <!-- Quick Reference Section -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold text-center mb-8 text-dark dark:text-light">C Quick Reference</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="bg-white dark:bg-dark-light p-6 rounded-xl shadow-md">
+                    <h3 class="text-xl font-semibold mb-4 text-dark dark:text-light border-b pb-2">Data Types</h3>
+                    <ul class="space-y-2 text-gray-700 dark:text-gray-300">
+                        <li><code class="bg-gray-200 dark:bg-gray-700 px-1 py-0.5 rounded">int</code> - Integer</li>
+                        <li><code class="bg-gray-200 dark:bg-gray-700 px-1 py-0.5 rounded">float</code> - Floating point</li>
+                        <li><code class="bg-gray-200 dark:bg-gray-700 px-1 py-0.5 rounded">double</code> - Double precision</li>
+                        <li><code class="bg-gray-200 dark:bg-gray-700 px-1 py-0.5 rounded">char</code> - Character</li>
+                        <li><code class="bg-gray-200 dark:bg-gray-700 px-1 py-0.5 rounded">void</code> - No type</li>
+                    </ul>
+                </div>
+                <div class="bg-white dark:bg-dark-light p-6 rounded-xl shadow-md">
+                    <h3 class="text-xl font-semibold mb-4 text-dark dark:text-light border-b pb-2">Control Structures</h3>
+                    <ul class="space-y-2 text-gray-700 dark:text-gray-300">
+                        <li><code class="bg-gray-200 dark:bg-gray-700 px-1 py-0.5 rounded">if-else</code> - Conditional</li>
+                        <li><code class="bg-gray-200 dark:bg-gray-700 px-1 py-0.5 rounded">switch</code> - Multi-way branch</li>
+                        <li><code class="bg-gray-200 dark:bg-gray-700 px-1 py-0.5 rounded">for</code> - Counted loop</li>
+                        <li><code class="bg-gray-200 dark:bg-gray-700 px-1 py-0.5 rounded">while</code> - Pre-test loop</li>
+                        <li><code class="bg-gray-200 dark:bg-gray-700 px-1 py-0.5 rounded">do-while</code> - Post-test loop</li>
+                    </ul>
+                </div>
+                <div class="bg-white dark:bg-dark-light p-6 rounded-xl shadow-md">
+                    <h3 class="text-xl font-semibold mb-4 text-dark dark:text-light border-b pb-2">Functions</h3>
+                    <ul class="space-y-2 text-gray-700 dark:text-gray-300">
+                        <li><code class="bg-gray-200 dark:bg-gray-700 px-1 py-0.5 rounded">printf()</code> - Formatted output</li>
+                        <li><code class="bg-gray-200 dark:bg-gray-700 px-1 py-0.5 rounded">scanf()</code> - Formatted input</li>
+                        <li><code class="bg-gray-200 dark:bg-gray-700 px-1 py-0.5 rounded">strlen()</code> - String length</li>
+                        <li><code class="bg-gray-200 dark:bg-gray-700 px-1 py-0.5 rounded">strcpy()</code> - String copy</li>
+                        <li><code class="bg-gray-200 dark:bg-gray-700 px-1 py-0.5 rounded">malloc()</code> - Memory allocation</li>
+                    </ul>
+                </div>
+                <div class="bg-white dark:bg-dark-light p-6 rounded-xl shadow-md">
+                    <h3 class="text-xl font-semibold mb-4 text-dark dark:text-light border-b pb-2">Operators</h3>
+                    <ul class="space-y-2 text-gray-700 dark:text-gray-300">
+                        <li><code class="bg-gray-200 dark:bg-gray-700 px-1 py-0.5 rounded">+ - * / %</code> - Arithmetic</li>
+                        <li><code class="bg-gray-200 dark:bg-gray-700 px-1 py-0.5 rounded">== != > < >= <=</code> - Relational</li>
+                        <li><code class="bg-gray-200 dark:bg-gray-700 px-1 py-0.5 rounded">&& || !</code> - Logical</li>
+                        <li><code class="bg-gray-200 dark:bg-gray-700 px-1 py-0.5 rounded">& | ^ ~</code> - Bitwise</li>
+                        <li><code class="bg-gray-200 dark:bg-gray-700 px-1 py-0.5 rounded">= += -= *= /=</code> - Assignment</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-dark dark:bg-dark-light text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-xl font-bold mb-4 logo">NASTEKCNOTES</h3>
+                    <p class="text-gray-400">Comprehensive C programming resource for students and developers.</p>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Quick Links</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#theory" class="hover:text-primary-light transition">Theory Questions</a></li>
+                        <li><a href="#programs" class="hover:text-primary-light transition">Programming Questions</a></li>
+                        <li><a href="#features" class="hover:text-primary-light transition">Features</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Resources</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-primary-light transition">C Documentation</a></li>
+                        <li><a href="#" class="hover:text-primary-light transition">Online Compiler</a></li>
+                        <li><a href="#" class="hover:text-primary-light transition">Practice Problems</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Contact</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li>Email: gajendraawasthi456@gmail.com</li>
+                        <li>GitHub: https://github.com/GajendraAwasthi</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
+                <p>&copy; 2025 NASTEKCNOTES. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <button id="backToTop" class="back-to-top bg-primary-light text-white p-3 rounded-full shadow-lg hover:bg-primary-dark transition">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+        </svg>
+    </button>
+
+    <script>
+        // Mobile menu toggle
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Dark mode toggle
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        const sunIcon = document.getElementById('sunIcon');
+        const moonIcon = document.getElementById('moonIcon');
+        
+        // Check for saved user preference or system preference
+        if (localStorage.getItem('darkMode') === 'true' || 
+            (!localStorage.getItem('darkMode') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+            sunIcon.classList.add('hidden');
+            moonIcon.classList.remove('hidden');
+        }
+        
+        darkModeToggle.addEventListener('click', () => {
+            document.documentElement.classList.toggle('dark');
+            localStorage.setItem('darkMode', document.documentElement.classList.contains('dark'));
+            
+            // Toggle icons
+            sunIcon.classList.toggle('hidden');
+            moonIcon.classList.toggle('hidden');
+        });
+
+        // Back to top button
+        const backToTopBtn = document.getElementById('backToTop');
+        
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                backToTopBtn.classList.add('visible');
+            } else {
+                backToTopBtn.classList.remove('visible');
+            }
+        });
+        
+        backToTopBtn.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // Copy code functionality
+        function copyCode(button) {
+            const codeBlock = button.parentElement.querySelector('code');
+            const textArea = document.createElement('textarea');
+            textArea.value = codeBlock.textContent;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+            
+            // Change button text temporarily
+            button.textContent = 'Copied!';
+            setTimeout(() => {
+                button.textContent = 'Copy';
+            }, 2000);
+        }
+
+        // Search functionality would be implemented here
+        // For a complete implementation, you would need to:
+        // 1. Add event listeners to search inputs
+        // 2. Filter questions/programs based on search term
+        // 3. Show/hide elements accordingly
+    </script>
+</body>
+</html>
